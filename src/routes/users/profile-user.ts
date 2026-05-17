@@ -24,19 +24,24 @@ export async function profileUser(app: FastifyTypedInstance) {
       const token = authHeader.split(" ")[1];
 
       const decode = app.jwt.verify(token) as { id: string };
+      try {
+        const profile = await prisma.user.findUnique({
+          where: {
+            id: decode.id,
+          },
+          select: {
+            name: true,
+            lastName: true,
+            createAt: true,
+          },
+        });
 
-      const profile = await prisma.user.findUnique({
-        where: {
-          id: decode.id,
-        },
-        select: {
-          name: true,
-          lastName: true,
-          createAt: true,
-        },
-      });
-
-      return rep.status(201).send(profile);
+        return rep.status(201).send(profile);
+      } catch (err) {
+        return rep.status(404).send({
+          message: "erro ao buscar dados",
+        });
+      }
     },
   );
 }
