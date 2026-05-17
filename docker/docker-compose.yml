@@ -1,0 +1,10 @@
+services:
+  db:
+    image: postgres:18-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bookmanager
+    ports:
+      - "5433:5432"
