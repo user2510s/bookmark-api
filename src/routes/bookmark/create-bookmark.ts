@@ -13,22 +13,12 @@ export async function createBookmark(app: FastifyTypedInstance) {
           description: z.string(),
           image: z.url(),
         }),
-
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-        headers: z.object({
-          authorization: z.string(),
-        }),
       },
     },
     async (req, rep) => {
       const { description, image, title } = req.body;
       const date = new Date();
-      const authHeader = req.headers.authorization;
-      const token = authHeader.split(" ")[1];
+      const token = req.cookies["user_login"] as string;
       const decode = app.jwt.verify(token) as { id: string };
       try {
         const bookmark = await prisma.bookMark.create({

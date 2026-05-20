@@ -10,15 +10,7 @@ export async function deleteBookmark(app: FastifyTypedInstance) {
         tags: ["bookmark"],
         body: z.object({
           id: z.string(),
-          verify: z.boolean(),
-        }),
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-        headers: z.object({
-          authorization: z.string(),
+          verify: z.boolean().default(false),
         }),
         response: {
           201: z.object({
@@ -32,8 +24,7 @@ export async function deleteBookmark(app: FastifyTypedInstance) {
     },
     async (req, rep) => {
       const { id, verify } = req.body;
-      const authHeader = req.headers.authorization;
-      const token = authHeader.split(" ")[1];
+      const token = req.cookies["user_login"] as string;
       const decode = app.jwt.verify(token) as { id: string };
       if (!verify) {
         return rep.status(401).send({

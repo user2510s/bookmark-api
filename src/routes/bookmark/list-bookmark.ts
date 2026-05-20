@@ -8,19 +8,10 @@ export async function listBookmark(app: FastifyTypedInstance) {
     {
       schema: {
         tags: ["bookmark"],
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-        headers: z.object({
-          authorization: z.string(),
-        }),
       },
     },
     async (req, rep) => {
-      const authHeader = req.headers.authorization;
-      const token = authHeader.split(" ")[1];
+      const token = req.cookies["user_login"] as string;
       const decode = app.jwt.verify(token) as { id: string };
       try {
         const listBookmark = await prisma.bookMark.findMany({

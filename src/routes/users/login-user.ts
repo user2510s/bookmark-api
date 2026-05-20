@@ -11,14 +11,17 @@ export async function loginUser(app: FastifyTypedInstance) {
         tags: ["users"],
         description: "Login with our user.",
         body: z.object({
-          email: z.string().email(),
-          password: z.string().min(5).max(20),
+          email: z.email({ error: "Email invalido" }),
+          password: z.string().min(5, { error: "Senha muito curta" }).max(20),
         }),
         response: {
           200: z.object({
             token: z.string(),
           }),
           404: z.object({
+            err: z.string(),
+          }),
+          500: z.object({
             err: z.string(),
           }),
         },
@@ -56,12 +59,25 @@ export async function loginUser(app: FastifyTypedInstance) {
           },
         );
 
+        const isProd = process.env.NODE_ENV === "production";
+
+        rep.cookie("user_login", token, {
+          httpOnly: true,
+          secure: isProd,
+          sameSite: isProd ? "none" : "lax",
+          maxAge: 60 * 60, // 1h em segundos
+          path: "/",
+          domain: isProd ? "" : "localhost",
+        });
+
         return rep.status(200).send({
-          token: token,
+          token,
         });
       } catch (err) {
-        return rep.status(404).send({
-          err: "Error",
+        console.error(err);
+
+        return rep.status(500).send({
+          err: "Internal server error",
         });
       }
     },
