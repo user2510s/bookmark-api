@@ -1,32 +1,26 @@
-import z from "zod";
-import { FastifyTypedInstance } from "../../@types/types";
-import { prisma } from "../../lib/prisma";
+import { FastifyTypedInstance } from "../../../@types/types";
+import { prisma } from "../../../lib/prisma";
+import verifyAuth from "../../../http/middlewares/auth";
 
 export async function profileUser(app: FastifyTypedInstance) {
   app.get(
     "/profile/users",
     {
+      preHandler: [verifyAuth],
       schema: {
         tags: ["users"],
       },
     },
     async (req, rep) => {
-      // const authHeader = req.headers.authorization;
-
-      // const token = authHeader.split(" ")[1];
-
-      const token = req.cookies["user_login"] as string;
-
       try {
-        const decode = app.jwt.verify(token) as { id: string };
         const profile = await prisma.user.findUnique({
           where: {
-            id: decode.id,
+            id: req.user.id,
           },
           select: {
             name: true,
             lastName: true,
-            createAt: true,
+            createdAt: true,
           },
         });
 

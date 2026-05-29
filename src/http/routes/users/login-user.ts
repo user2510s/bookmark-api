@@ -1,7 +1,7 @@
-import z from "zod";
-import { FastifyTypedInstance } from "../../@types/types";
-import { prisma } from "../../lib/prisma";
-import { verifyHash } from "../../util/hash";
+import z, { describe } from "zod";
+import { FastifyTypedInstance } from "../../../@types/types";
+import { prisma } from "../../../lib/prisma";
+import { verifyHash } from "../../../util/hash";
 
 export async function loginUser(app: FastifyTypedInstance) {
   app.post(
@@ -16,13 +16,13 @@ export async function loginUser(app: FastifyTypedInstance) {
         }),
         response: {
           200: z.object({
-            token: z.string(),
+            message: z.string().describe("Mensagem de sucesso"),
           }),
-          404: z.object({
-            err: z.string(),
+          401: z.object({
+            message: z.string().describe("Mensagem de erro"),
           }),
           500: z.object({
-            err: z.string(),
+            message: z.string().describe("Mensagem de erro"),
           }),
         },
       },
@@ -36,16 +36,16 @@ export async function loginUser(app: FastifyTypedInstance) {
         });
 
         if (!user) {
-          return rep.status(404).send({
-            err: "User not found",
+          return rep.status(401).send({
+            message: "Usuario ou senha incorreta",
           });
         }
 
         const isPassword = await verifyHash(password, user.password);
 
         if (!isPassword) {
-          return rep.status(404).send({
-            err: "Invalid password",
+          return rep.status(401).send({
+            message: "Usuario ou senha incorreta",
           });
         }
 
@@ -71,13 +71,12 @@ export async function loginUser(app: FastifyTypedInstance) {
         });
 
         return rep.status(200).send({
-          token,
+          message: "Usuario encontrado",
         });
       } catch (err) {
         console.error(err);
-
         return rep.status(500).send({
-          err: "Internal server error",
+          message: "Internal server error",
         });
       }
     },

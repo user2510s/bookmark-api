@@ -10,7 +10,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import { fastifyCors } from "@fastify/cors";
 import cookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
-import { routes } from "./routes/routes";
+import { routes } from "./http/routes/routes";
 import "dotenv/config";
 
 const app = fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
@@ -29,7 +29,10 @@ export function start() {
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
 
-  app.register(fastifyCors, { origin: "*" });
+  app.register(fastifyCors, {
+    origin: "http://localhost:3000",
+    credentials: true,
+  });
   app.register(fastifySwagger, {
     openapi: {
       info: {

@@ -1,11 +1,13 @@
 import z from "zod";
-import { FastifyTypedInstance } from "../../@types/types";
-import { prisma } from "../../lib/prisma";
+import { FastifyTypedInstance } from "../../../@types/types";
+import { prisma } from "../../../lib/prisma";
+import verifyAuth from "../../../http/middlewares/auth";
 
 export async function deleteBookmark(app: FastifyTypedInstance) {
   app.delete(
     "/delete/bookmark",
     {
+      preHandler: [verifyAuth],
       schema: {
         tags: ["bookmark"],
         body: z.object({
@@ -24,19 +26,12 @@ export async function deleteBookmark(app: FastifyTypedInstance) {
     },
     async (req, rep) => {
       const { id, verify } = req.body;
-      const token = req.cookies["user_login"] as string;
-      const decode = app.jwt.verify(token) as { id: string };
       if (!verify) {
         return rep.status(401).send({
           message: "Não foi possivel apagar o bookmark",
         });
       }
-      if (!token) {
-        return rep.status(401).send({
-          message: "Não foi possivel apagar o bookmark",
-        });
-      }
-      if (!decode.id) {
+      if (!req.user.id) {
         return rep.status(401).send({
           message: "Não foi possivel apagar o bookmark",
         });
@@ -44,7 +39,7 @@ export async function deleteBookmark(app: FastifyTypedInstance) {
 
       try {
         await prisma.bookMark.delete({
-          where: { id, userId: decode.id },
+          where: { id, userId: req.user.id },
         });
         return rep.status(201).send({
           message: "Bookmark apagado com sucesso",
