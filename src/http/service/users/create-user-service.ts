@@ -1,44 +1,32 @@
-import { prisma } from "../../../lib/prisma";
+// services/user/create-user-service.ts
+
 import { createHash } from "../../../util/hash";
+import { UserRepository } from "../../../repositories/user/user-repository";
+import { CreateUserDTO } from "../../../schemas/users/create-user-schema";
 
-interface CreateUserRequest {
-  email: string;
-  password: string;
-  name: string;
-  lastName: string;
-  tags: string[];
-}
+export class CreateUserService {
+  constructor(private userRepository: UserRepository) {}
 
-export async function createUserService({
-  email,
-  password,
-  name,
-  lastName,
-  tags,
-}: CreateUserRequest) {
-  const userExists = await prisma.user.findUnique({
-    where: { email },
-  });
+  async execute({ email, password, name, lastName, tags }: CreateUserDTO) {
+    const userExists = await this.userRepository.findByEmail(email);
 
-  if (userExists) {
-    throw new Error("EMAIL_ALREADY_EXISTS");
-  }
+    if (userExists) {
+      throw new Error("EMAIL_ALREADY_EXISTS");
+    }
 
-  const hashedPassword = await createHash(password);
+    const hashedPassword = await createHash(password);
 
-  await prisma.user.create({
-    data: {
+    await this.userRepository.create({
       email,
       password: hashedPassword,
       name,
       lastName,
       tags,
-      createdAt: new Date(),
-    },
-  });
+    });
 
-  return {
-    success: true,
-    message: "Usuario criado com sucesso!",
-  };
+    return {
+      success: true,
+      message: "Usuário criado com sucesso!",
+    };
+  }
 }

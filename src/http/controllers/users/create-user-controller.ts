@@ -1,5 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { createUserService } from "../../service/users/create-user-service";
+import { CreateUserService } from "../../service/users/create-user-service";
+import { UserRepository } from "../../../repositories/user/user-repository";
+
+const userRepository = new UserRepository();
+const createUserService = new CreateUserService(userRepository);
 
 export async function createUserController(
   req: FastifyRequest,
@@ -8,7 +12,7 @@ export async function createUserController(
   const { email, password, name, lastName, tags } = req.body as any;
 
   try {
-    const result = await createUserService({
+    const result = await createUserService.execute({
       email,
       password,
       name,
