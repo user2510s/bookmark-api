@@ -9,7 +9,7 @@ declare module "@fastify/jwt" {
 
     user: {
       id: string;
-      email: string;
+      email?: string;
     };
   }
 }
