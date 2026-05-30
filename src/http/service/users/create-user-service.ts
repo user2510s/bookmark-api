@@ -1,5 +1,3 @@
-// services/users/create-user-service.ts
-
 import { prisma } from "../../../lib/prisma";
 import { createHash } from "../../../util/hash";
 

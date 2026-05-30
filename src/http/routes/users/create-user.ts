@@ -1,5 +1,3 @@
-// routes/users/create-user.ts
-
 import z from "zod";
 import { FastifyTypedInstance } from "../../../@types/types";
 import { AVAILABLE_TAGS } from "../../../@types/tags";
