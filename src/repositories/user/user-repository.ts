@@ -1,5 +1,3 @@
-// repositories/user/user-repository.ts
-
 import { prisma } from "../../lib/prisma";
 
 export class UserRepository {
