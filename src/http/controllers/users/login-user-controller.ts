@@ -1,6 +1,6 @@
 import { FastifyReply } from "fastify";
 import { FastifyRequest } from "fastify/types/request";
-import { LoginUserService } from "../../service/users/login-user-service";
+import { LoginUserService } from "../../../services/users/login-user-service";
 import { UserRepository } from "../../../repositories/user/user-repository";
 
 const userRepository = new UserRepository();

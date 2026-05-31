@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { CreateUserService } from "../../service/users/create-user-service";
+import { CreateUserService } from "../../../services/users/create-user-service";
 import { UserRepository } from "../../../repositories/user/user-repository";
 
 const userRepository = new UserRepository();
