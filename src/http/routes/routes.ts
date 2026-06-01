@@ -4,7 +4,6 @@ import { createBookmark } from "./bookmark/create-bookmark";
 import { deleteBookmark } from "./bookmark/delete-bookmark";
 import { findBookmark } from "./bookmark/find-bookmark";
 import { listBookmark } from "./bookmark/list-bookmark";
-import { feedList } from "./feed/feed-listing";
 import { createUser } from "./users/create-user";
 import { loginUser } from "./users/login-user";
 import { profileUser } from "./users/profile-user";
@@ -19,5 +18,4 @@ export async function routes(app: FastifyTypedInstance) {
   app.register(loginUser);
   app.register(profileUser);
   app.register(commentsBookmark);
-  app.register(feedList);
 }

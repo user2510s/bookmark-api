@@ -1,8 +1,6 @@
-// services/user/create-user-service.ts
-
-import { createHash } from "../../../util/hash";
-import { UserRepository } from "../../../repositories/user/user-repository";
-import { CreateUserDTO } from "../../../schemas/users/create-user-schema";
+import { createHash } from "../../util/hash";
+import { UserRepository } from "../../repositories/user/user-repository";
+import { CreateUserDTO } from "../../schemas/users/create-user-schema";
 
 export class CreateUserService {
   constructor(private userRepository: UserRepository) {}
@@ -16,7 +14,7 @@ export class CreateUserService {
 
     const hashedPassword = await createHash(password);
 
-    await this.userRepository.create({
+    await this.userRepository.create({  
       email,
       password: hashedPassword,
       name,

@@ -30,7 +30,6 @@ export async function createUserController(
         });
       }
     }
-
     return rep.status(500).send({
       success: false,
       message: "Erro interno do servidor.",

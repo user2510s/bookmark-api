@@ -3,6 +3,7 @@ import z from "zod";
 import { prisma } from "../../../lib/prisma";
 import verifyAuth from "../../../http/middlewares/auth";
 import { AVAILABLE_TAGS } from "../../../@types/tags";
+import { createBookmarkController } from "../../controllers/bookmark/create-bookmark-controller";
 
 export async function createBookmark(app: FastifyTypedInstance) {
   app.post(
@@ -28,44 +29,6 @@ export async function createBookmark(app: FastifyTypedInstance) {
         }),
       },
     },
-    async (req, rep) => {
-      const {
-        description,
-        image,
-        title,
-        amazonLink,
-        totalRead,
-        totalPage,
-        tags,
-      } = req.body;
-
-      const date = new Date();
-
-      try {
-        const bookmark = await prisma.bookMark.create({
-          data: {
-            title,
-            description,
-            image,
-            amazonLink,
-            totalRead,
-            totalPage,
-            tags,
-            createdAt: date,
-            user: {
-              connect: {
-                id: req.user.id,
-              },
-            },
-          },
-        });
-        return rep.status(201).send(bookmark);
-      } catch (err) {
-        console.log(err);
-        return rep.send({
-          message: "não foi possivel criar o bookmark!",
-        });
-      }
-    },
+    createBookmarkController,
   );
 }

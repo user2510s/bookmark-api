@@ -50,8 +50,8 @@ export async function loginUserController(
         });
       }
     }
-
     return rep.status(500).send({
+      success: false,
       message: "internal server error",
     });
   }

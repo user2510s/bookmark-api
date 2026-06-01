@@ -1,6 +1,6 @@
-import { UserRepository } from "../../../repositories/user/user-repository";
-import { LoginUserDTO } from "../../../schemas/users/login-user-schema";
-import { verifyHash } from "../../../util/hash";
+import { UserRepository } from "../../repositories/user/user-repository";
+import { LoginUserDTO } from "../../schemas/users/login-user-schema";
+import { verifyHash } from "../../util/hash";
 
 export class LoginUserService {
   constructor(private userRepository: UserRepository) {}
