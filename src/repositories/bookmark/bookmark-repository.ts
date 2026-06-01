@@ -13,6 +13,14 @@ interface CreateBookmarkData {
 }
 
 export class BookmarkRepository {
+  async findBookmark(id: string) {
+    return prisma.bookMark.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
   async create(data: CreateBookmarkData) {
     return prisma.bookMark.create({
       data: {
